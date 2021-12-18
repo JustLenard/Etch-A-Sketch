@@ -1,8 +1,8 @@
 let columnsValue = document.querySelector('.width-value').value;
 currentColor = '#000';
-var boxes;
+var pixels;
 
-const playingField = document.querySelector('.playing-field');
+const canvas = document.querySelector('.playing-field');
 const reset = document.querySelector('.reset-btn');
 const penColor = document.querySelector('#pen-color');
 const pen = document.querySelector('.pen');
@@ -12,7 +12,7 @@ const shadder = document.querySelector('.shadder');
 const columnsArea = document.querySelector('.width-value');
 
 //Creates the initial board.
-createBoxes(columnsValue);
+createPixels(columnsValue);
 painting();
 
 // Handles pen color change.
@@ -31,41 +31,38 @@ function setPenColor(newColor) {
 	})
 );
 
-// Listens and recreates the 'playingField' based on the desired size.
-[columnsArea].forEach(area =>
-	area.addEventListener('change', () => {
-		columnsValue = columnsArea.value;
-		playingField.innerHTML = '';
-		createBoxes(columnsValue);
-		painting();
-	})
-);
+// Listens and recreates the 'canvas' with the desired amount of 'pixels'
+columnsArea.addEventListener('change', () => {
+	columnsValue = columnsArea.value;
+	canvas.innerHTML = '';
+	createPixels(columnsValue);
+	painting();
+});
 
-// Creates 'boxes' in the 'playingField'.
-function createBoxes(columns) {
+// Creates the 'pixels' in the 'canvas'.
+function createPixels(columns) {
 	for (let i = 1; i <= columns ** 2; i++) {
-		playingField.insertAdjacentHTML('beforeend', `<div class="box"></div>`);
+		canvas.insertAdjacentHTML('beforeend', `<div class="box"></div>`);
 	}
-	const boxWidth = 100 / columnsValue;
-	boxes = document.querySelectorAll('.box');
+	const pixelWidth = 100 / columnsValue;
+	pixels = document.querySelectorAll('.box');
 
-	boxes.forEach(box => {
-		box.style.width = `${boxWidth}%`;
-		box.style.height = `${boxWidth}%`;
+	pixels.forEach(pixel => {
+		pixel.style.width = `${pixelWidth}%`;
+		pixel.style.height = `${pixelWidth}%`;
 	});
 }
 
 // All the painting logic.
 function painting() {
-	console.log('f');
-	boxes.forEach(box => {
+	pixels.forEach(box => {
 		box.addEventListener('mouseover', () => {
 			if (pen.classList.contains('active')) {
 				box.style.backgroundColor = `${currentColor}`;
 			} else if (rainbow.classList.contains('active')) {
 				box.style.backgroundColor = `rgb(${rn()},${rn()},${rn()})`;
 			} else if (fill.classList.contains('active')) {
-				boxes.forEach(box => {
+				pixels.forEach(box => {
 					box.style.backgroundColor = `${currentColor}`;
 					box.style.filter = null;
 				});
@@ -84,7 +81,7 @@ function painting() {
 
 // Reset button logic.
 reset.addEventListener('click', () => {
-	boxes.forEach(box => {
+	pixels.forEach(box => {
 		box.style.filter = null;
 		box.style.backgroundColor = null;
 	});
@@ -94,3 +91,5 @@ reset.addEventListener('click', () => {
 function rn() {
 	return Math.floor(Math.random() * 256 + 1);
 }
+
+//Think of some better names to use for variables.
